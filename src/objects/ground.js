@@ -1,4 +1,4 @@
-import { Box } from "./Box.js";
+import { Box } from "./box.js";
 import * as THREE from "three";
 
 const textureLoader = new THREE.TextureLoader();
