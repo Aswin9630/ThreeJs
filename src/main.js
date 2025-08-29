@@ -19,7 +19,7 @@ function animate() {
   camera.position.set(robot.position.x, robot.position.y + 2, robot.position.z + 5);
   camera.lookAt(robot.position);
 
-  robot.velocity.x = Keys.a.pressed ? -0.1 : Keys.d.pressed ? 0.1 : 0;
+  robot.velocity.x = Keys.left.pressed ? -0.1 : Keys.right.pressed ? 0.1 : 0;
 
   renderer.render(scene, camera);
 }

@@ -1,16 +1,20 @@
 export const Keys = {
-  a: { pressed: false },
-  d: { pressed: false },
+  left: { pressed: false },
+  right: { pressed: false },
 };
 
 export function setupKeyboardListeners() {
   window.addEventListener("keydown", (event) => {
-    if (event.code === "KeyA") Keys.a.pressed = true;
-    if (event.code === "KeyD") Keys.d.pressed = true;
+    if (event.code === "KeyA" || event.code === "ArrowLeft")
+      Keys.left.pressed = true;
+    if (event.code === "KeyD" || event.code === "ArrowRight")
+      Keys.right.pressed = true;
   });
 
   window.addEventListener("keyup", (event) => {
-    if (event.code === "KeyA") Keys.a.pressed = false;
-    if (event.code === "KeyD") Keys.d.pressed = false;
+    if (event.code === "KeyA" || event.code === "ArrowLeft")
+      Keys.left.pressed = false;
+    if (event.code === "KeyD" || event.code === "ArrowRight")
+      Keys.right.pressed = false;
   });
 }
