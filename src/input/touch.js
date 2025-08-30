@@ -1,33 +1,35 @@
 import { Keys } from './keyboard.js';
 
-let startX = 0;
+let touchX = null;
 
 export function setupTouchControls() {
   window.addEventListener("touchstart", (event) => {
-    startX = event.touches[0].clientX;
+    touchX = event.touches[0].clientX;
   });
 
-  window.addEventListener("touchend", (event) => {
-    const endX = event.changedTouches[0].clientX;
-    const deltaX = endX - startX;
+  window.addEventListener("touchmove", (event) => {
+    if (touchX === null) return;
 
-    // Swipe threshold
-    if (Math.abs(deltaX) > 30) {
-      if (deltaX > 0) {
-        // Swipe right
-        Keys.right.pressed = true;
-        Keys.left.pressed = false;
-      } else {
-        // Swipe left
-        Keys.left.pressed = true;
-        Keys.right.pressed = false;
-      }
+    const currentX = event.touches[0].clientX;
+    const deltaX = currentX - touchX;
 
-      // Reset keys after short duration to simulate key press
-      setTimeout(() => {
-        Keys.left.pressed = false;
-        Keys.right.pressed = false;
-      }, 100);
+    const threshold = 5; 
+
+    if (deltaX > threshold) {
+      Keys.right.pressed = true;
+      Keys.left.pressed = false;
+    } else if (deltaX < -threshold) {
+      Keys.left.pressed = true;
+      Keys.right.pressed = false;
+    } else {
+      Keys.left.pressed = false;
+      Keys.right.pressed = false;
     }
+  });
+
+  window.addEventListener("touchend", () => {
+    Keys.left.pressed = false;
+    Keys.right.pressed = false;
+    touchX = null;
   });
 }
