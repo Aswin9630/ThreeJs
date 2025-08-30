@@ -21,31 +21,39 @@ loadAnimatedRobot(scene, ({ model, mixer: loadedMixer }) => {
   robot.velocity = { x: 0, y: 0, z: 0 };
 });
 
-scene.add(light, robot, ground, leftWall, rightWall);
+scene.add(light, ground, leftWall, rightWall);
 
 const coins = [];
 const roadWidth = ground.width;
-const coinCount = 20; // spawn 20 coins ahead
+const coinCount = 20; 
 for (let i = 0; i < coinCount; i++) {
-  const x = (Math.random() - 0.5) * (roadWidth - 1); // within road
-  const z = -50 - Math.random() * 700; // ahead of robot
+  const x = (Math.random() - 0.5) * (roadWidth - 1); 
+  const z = -50 - Math.random() * 700; 
   const coin = new Coin({ x, y: 0.5, z });
   coins.push(coin);
   scene.add(coin);
 }
 
-// --- Score ---
+
+
 let score = 0;
 const scoreElement = document.createElement("div");
 scoreElement.style.position = "absolute";
 scoreElement.style.top = "20px";
-scoreElement.style.left = "20px";
+scoreElement.style.right = "20px";
 scoreElement.style.fontSize = "24px";
 scoreElement.style.color = "white";
+scoreElement.style.background = "rgba(0,0,0,0.6)";
+scoreElement.style.padding = "8px 12px";
+scoreElement.style.borderRadius = "8px";
+scoreElement.style.fontFamily = "Arial, sans-serif";
+scoreElement.style.zIndex = "100";
 scoreElement.innerHTML = `Score: ${score}`;
 document.body.appendChild(scoreElement);
 
 const clock = new THREE.Clock();
+
+
 
 function animate() {
   const delta = clock.getDelta();

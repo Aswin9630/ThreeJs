@@ -32,7 +32,7 @@ export const leftWall = new Box({
   position: { x: -5.5, y: 1, z: -100 },
 });
 leftWall.material.map = wallTexture;
-leftWall.material.color.set(0xffffff);
+leftWall.material.color.set("#708090");
 leftWall.receiveShadow = true;
 
 export const rightWall = new Box({
@@ -42,7 +42,7 @@ export const rightWall = new Box({
   position: { x: 5.5, y: 1, z: -100 },
 });
 rightWall.material.map = wallTexture;
-rightWall.material.color.set(0xffffff);
+rightWall.material.color.set("#708090");
 rightWall.receiveShadow = true;
 
 
