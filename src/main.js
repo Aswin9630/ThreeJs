@@ -7,6 +7,7 @@ import { light } from "./core/light.js";
 import { ground, roadTexture, leftWall, rightWall } from "./objects/ground.js";
 import { Robot } from "./objects/robot.js";
 import { Keys, setupKeyboardListeners } from "./input/keyboard.js";
+import { setupTouchControls } from "./input/touch.js";
 import { loadAnimatedRobot } from "./objects/animatedRobot.js";
 import { Coin } from "./objects/coins.js";
 
