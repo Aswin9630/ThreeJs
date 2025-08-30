@@ -6,14 +6,13 @@ export class Coin extends THREE.Mesh {
     const material = new THREE.MeshStandardMaterial({ color: 0xffd700 });
     super(geometry, material);
 
-    this.position.set(x, y, z);
-    this.rotation.x = Math.PI / 2; 
-
+    this.position.set(x, y + 0.5, z);
+    this.rotation.x = Math.PI / 2;
     this.boundingBox = new THREE.Box3().setFromObject(this);
   }
 
   update() {
-    this.rotation.z += 0.1; 
+    this.rotation.z += 0.1;
     this.boundingBox.setFromObject(this);
   }
 }
