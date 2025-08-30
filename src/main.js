@@ -12,7 +12,6 @@ import { loadAnimatedRobot } from "./objects/animatedRobot.js";
 import { Coin } from "./objects/coins.js";
 import { Obstacle } from "./objects/obstacles.js";
 import { createSparkleEffect } from "./objects/sparkle.js";
-import { playCoinSound } from "./audio/sound.js";
 import { boxCollision } from "./utils/collision.js";
 
 setupKeyboardListeners();
@@ -119,7 +118,6 @@ function animate(robot) {
       coins.splice(i, 1);
       score += 10;
       scoreElement.innerHTML = `Score: ${score}`;
-      playCoinSound();
 
       const sparkle = createSparkleEffect(coin.position.clone());
       sparkles.push(sparkle);
