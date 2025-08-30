@@ -12,6 +12,7 @@ import { Coin } from "./objects/coins.js";
 
 let robot = new Robot();
 setupKeyboardListeners();
+setupTouchControls();
 
 let mixer;
 loadAnimatedRobot(scene, ({ model, mixer: loadedMixer }) => {
@@ -25,15 +26,14 @@ scene.add(light, ground, leftWall, rightWall);
 
 const coins = [];
 const roadWidth = ground.width;
-const coinCount = 20; 
+const coinCount = 20;
 for (let i = 0; i < coinCount; i++) {
-  const x = (Math.random() - 0.5) * (roadWidth - 1); 
-  const z = -50 - Math.random() * 700; 
+  const x = (Math.random() - 0.5) * (roadWidth - 1);
+  const z = -50 - Math.random() * 700;
   const coin = new Coin({ x, y: 0.5, z });
   coins.push(coin);
   scene.add(coin);
 }
-
 
 
 let score = 0;
@@ -53,8 +53,6 @@ document.body.appendChild(scoreElement);
 
 const clock = new THREE.Clock();
 
-
-
 function animate() {
   const delta = clock.getDelta();
   if (mixer) mixer.update(delta);
@@ -69,23 +67,45 @@ function animate() {
   if (robot.position.x < -halfRoad + 0.5) robot.position.x = -halfRoad + 0.5;
   if (robot.position.x > halfRoad - 0.5) robot.position.x = halfRoad - 0.5;
 
-  
   robot.velocity.x = Keys.left.pressed ? -0.1 : Keys.right.pressed ? 0.1 : 0;
   robot.position.x += robot.velocity.x;
   robot.position.z -= 0.1;
 
+ const robotBox = new THREE.Box3().setFromObject(robot);
 
-  coins.forEach((coin, index) => {
-    coin.update();
+  // for (let i = coins.length - 1; i >= 0; i--) {
+  //   const coin = coins[i];
+  //   coin.update();
 
-    const robotBox = new THREE.Box3().setFromObject(robot);
-    if (robotBox.intersectsBox(coin.boundingBox)) {
-      scene.remove(coin);
-      coins.splice(index, 1);
-      score += 10;
-      scoreElement.innerHTML = `Score: ${score}`;
-    }
-  });
+  //   if (robotBox.intersectsBox(coin.boundingBox)) {
+  //     scene.remove(coin);
+  //     coins.splice(i, 1); 
+  //     score += 10;
+  //     scoreElement.innerHTML = `Score: ${score}`;
+  //   }
+
+  // }
+  for (let i = coins.length - 1; i >= 0; i--) {
+  const coin = coins[i];
+
+  // Move coin towards robot
+  coin.position.z += 0.2; // adjust speed to match ground
+
+  // Update bounding box
+  coin.boundingBox.setFromObject(coin);
+
+  // Update robot bounding box as well
+  robotBox.setFromObject(robot);
+
+  if (robotBox.intersectsBox(coin.boundingBox)) {
+    scene.remove(coin);
+    coins.splice(i, 1);
+    score += 10;
+    scoreElement.innerHTML = `Score: ${score}`;
+    console.log("COLLISION! score =", score);
+  }
+}
+
 
 
   camera.position.set(
@@ -94,7 +114,6 @@ function animate() {
     robot.position.z + 5
   );
   camera.lookAt(robot.position);
-
 
   renderer.render(scene, camera);
 }
