@@ -1,5 +1,5 @@
 
-export const backgroundMusic = new Audio("../../assets/audio/bg_audio.mp3");
+export const backgroundMusic = new Audio("/bg_audio.mp3");
 
 backgroundMusic.loop = true;        
 backgroundMusic.volume = 0.5;       
