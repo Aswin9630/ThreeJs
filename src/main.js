@@ -13,6 +13,7 @@ import { Coin } from "./objects/coins.js";
 import { Obstacle } from "./objects/obstacles.js";
 import { createSparkleEffect } from "./objects/sparkle.js";
 import { boxCollision } from "./utils/collision.js";
+import { playBackgroundMusic, stopBackgroundMusic } from "./audio/sound.js";
 
 setupKeyboardListeners();
 setupTouchControls();
@@ -24,42 +25,49 @@ const coins = [];
 const obstacles = [];
 const sparkles = [];
 let score = 0;
-let timeLeft = 60;
+let timeLeft = 30;
 
 const clock = new THREE.Clock();
 const timerElement = document.createElement("div");
-timerElement.style.cssText = "position:absolute;top:20px;left:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
+timerElement.style.cssText =
+  "position:absolute;top:20px;left:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
 document.body.appendChild(timerElement);
 
 const scoreElement = document.createElement("div");
-scoreElement.style.cssText = "position:absolute;top:20px;right:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
+scoreElement.style.cssText =
+  "position:absolute;top:20px;right:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
 scoreElement.innerHTML = `Score: ${score}`;
 document.body.appendChild(scoreElement);
 
-// Generate coins
+
 const roadWidth = ground.width;
-for (let i = 0; i < 20; i++) {
+const totalItems = 50; 
+
+for (let i = 0; i < totalItems; i++) {
   const x = (Math.random() - 0.5) * (roadWidth - 1);
-  const z = -5 - Math.random() * 100;
-  const coin = new Coin({ x, y: 0.5, z });
-  coins.push(coin);
-  scene.add(coin);
+  const z = -5 - Math.random() * 800;
+
+  const isCoin = Math.random() < 0.6; // 60% chance to spawn a coin
+
+  if (isCoin) {
+    const coin = new Coin({ x, y: 0.5, z });
+    coins.push(coin);
+    scene.add(coin);
+  } else {
+    const obs = new Obstacle({ x, y: 0.5, z });
+    obstacles.push(obs);
+    scene.add(obs);
+  }
 }
 
-// Generate obstacles
-for (let i = 0; i < 10; i++) {
-  const x = (Math.random() - 0.5) * (roadWidth - 2);
-  const z = -5 - Math.random() * 800;
-  const obs = new Obstacle({ x, y: 0.5, z });
-  obstacles.push(obs);
-  scene.add(obs);
-}
 
 loadAnimatedRobot(scene, ({ model, mixer: loadedMixer }) => {
   scene.remove(robot);
   robot = model;
   mixer = loadedMixer;
   robot.velocity = { x: 0, y: 0, z: 0 };
+
+  playBackgroundMusic();
 
   renderer.setAnimationLoop(() => animate(robot));
 });
@@ -68,6 +76,8 @@ function animate(robot) {
   const delta = clock.getDelta();
   timeLeft -= delta;
   if (timeLeft <= 0) {
+    stopBackgroundMusic();
+    endGame("⏱️ Time's up!");
     alert("Time's up! Final Score: " + score);
     renderer.setAnimationLoop(null);
     return;
@@ -82,7 +92,10 @@ function animate(robot) {
   robot.position.z -= 0.1;
 
   const halfRoad = roadWidth / 2;
-  robot.position.x = Math.max(-halfRoad + 0.5, Math.min(halfRoad - 0.5, robot.position.x));
+  robot.position.x = Math.max(
+    -halfRoad + 0.5,
+    Math.min(halfRoad - 0.5, robot.position.x)
+  );
 
   roadTexture.offset.y += 0.001;
   leftWall.material.map.offset.y += 0.001;
@@ -147,7 +160,7 @@ function animate(robot) {
   // Sparkle updates
   for (let i = sparkles.length - 1; i >= 0; i--) {
     const sparkle = sparkles[i];
-    sparkle.update(delta); // Pass delta time to control lifetime
+    sparkle.update(delta);
 
     if (sparkle.dead) {
       scene.remove(sparkle);
@@ -166,3 +179,16 @@ function animate(robot) {
   renderer.render(scene, camera);
 }
 
+function endGame(message) {
+  renderer.setAnimationLoop(null);
+  gameOverOverlay.innerHTML = `
+    <div>${message}</div>
+    <div>Final Score: ${score}</div>
+    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;">Restart</button>
+  `;
+  gameOverOverlay.style.display = "block";
+
+  document.getElementById("restartBtn").onclick = () => {
+    location.reload();
+  };
+}
