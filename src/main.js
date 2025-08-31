@@ -1,19 +1,25 @@
 import * as THREE from "three";
 import "./style.css";
-import { scene } from "./core/scene.js";
-import { camera } from "./core/camera.js";
-import { renderer } from "./core/renderer.js";
-import { light } from "./core/light.js";
-import { ground, roadTexture, leftWall, rightWall } from "./objects/ground.js";
-import { Robot } from "./objects/robot.js";
-import { Keys, setupKeyboardListeners } from "./input/keyboard.js";
-import { setupTouchControls } from "./input/touch.js";
-import { loadAnimatedRobot } from "./objects/animatedRobot.js";
-import { Coin } from "./objects/coins.js";
-import { Obstacle } from "./objects/obstacles.js";
-import { createSparkleEffect } from "./objects/sparkle.js";
-import { boxCollision } from "./utils/collision.js";
-import { playBackgroundMusic, stopBackgroundMusic } from "./audio/sound.js";
+import { scene } from "./core/scene";
+import { camera } from "./core/camera";
+import { renderer } from "./core/renderer";
+import { light } from "./core/light";
+import { ground, roadTexture, leftWall, rightWall } from "./objects/ground";
+import { Robot } from "./objects/robot";
+import { Keys, setupKeyboardListeners } from "./input/keyboard";
+import { setupTouchControls } from "./input/touch";
+import { loadAnimatedRobot } from "./objects/animatedRobot";
+import { Coin } from "./objects/coins";
+import { Obstacle } from "./objects/obstacles";
+import { createSparkleEffect } from "./objects/sparkle";
+import { boxCollision } from "./utils/collision";
+import { playBackgroundMusic, stopBackgroundMusic } from "./audio/sound";
+import {
+  createTimerElement,
+  createScoreElement,
+  createGameOverOverlay,
+  endGameButton
+} from "./utils/ui";
 
 setupKeyboardListeners();
 setupTouchControls();
@@ -28,45 +34,20 @@ let score = 0;
 let timeLeft = 60;
 
 const clock = new THREE.Clock();
-const timerElement = document.createElement("div");
-timerElement.style.cssText =
-  "position:absolute;top:20px;left:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
-document.body.appendChild(timerElement);
-
-const scoreElement = document.createElement("div");
-scoreElement.style.cssText =
-  "position:absolute;top:20px;right:20px;font-size:24px;color:white;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:8px;font-family:Arial,sans-serif;z-index:100;";
-scoreElement.innerHTML = `Score: ${score}`;
-document.body.appendChild(scoreElement);
-
-
-const gameOverOverlay = document.createElement("div");
-gameOverOverlay.style.cssText = `
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.85);
-  color: white;
-  font-size: 28px;
-  padding: 20px 40px;
-  border-radius: 12px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-  z-index: 999;
-  display: none;
-`;
-document.body.appendChild(gameOverOverlay);
+const timerElement = createTimerElement();
+const scoreElement = createScoreElement();
+const gameOverOverlay = createGameOverOverlay();
+// const endGame = endGameButton()
 
 
 const roadWidth = ground.width;
-const totalItems = 50; 
+const totalItems = 50;
 
 for (let i = 0; i < totalItems; i++) {
   const x = (Math.random() - 0.5) * (roadWidth - 1);
   const z = -5 - Math.random() * 1300;
 
-  const isCoin = Math.random() < 0.6; 
+  const isCoin = Math.random() < 0.6;
 
   if (isCoin) {
     const coin = new Coin({ x, y: 0.5, z });
@@ -78,7 +59,6 @@ for (let i = 0; i < totalItems; i++) {
     scene.add(obs);
   }
 }
-
 
 loadAnimatedRobot(scene, ({ model, mixer: loadedMixer }) => {
   scene.remove(robot);
@@ -193,14 +173,22 @@ function animate(robot) {
   renderer.render(scene, camera);
 }
 
-function endGame(message, celebrate=false) {
+function endGame(message, celebrate = false) {
   renderer.setAnimationLoop(null);
   gameOverOverlay.innerHTML = `
-   ${celebrate ? `<div style="font-size:32px; margin-bottom:10px;">🎉 Congratulations! 🎉</div>` : ""}
+   ${
+     celebrate
+       ? `<div style="font-size:32px; margin-bottom:10px;">🎉 Congratulations! 🎉</div>`
+       : ""
+   }
     <div>${message}</div>
    
     <div>Final Score: ${score}</div>
-   ${celebrate ? `<div style="font-size:20px; color:#ffd700;">✨ You did great! ✨</div>` : ""}
+   ${
+     celebrate
+       ? `<div style="font-size:20px; color:#ffd700;">✨ You did great! ✨</div>`
+       : ""
+   }
     <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">🔁 Play Again</button>
   `;
   gameOverOverlay.style.display = "block";
