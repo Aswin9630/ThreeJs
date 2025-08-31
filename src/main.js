@@ -96,8 +96,7 @@ function animate(robot) {
   timeLeft -= delta;
   if (timeLeft <= 0) {
     stopBackgroundMusic();
-    // alert("Time's up! Final Score: " + score);
-    endGame("⏱️ Time's up!");
+    endGame("⏱️ Time's up!", true);
     renderer.setAnimationLoop(null);
     return;
   }
@@ -168,8 +167,7 @@ function animate(robot) {
     };
 
     if (boxCollision({ box1: robotBox, box2: obsBox })) {
-      endGame("💥 You hit an obstacle!");
-      // alert("You hit an obstacle! Final Score: " + score);
+      endGame("💥 You hit an obstacle!", false);
       renderer.setAnimationLoop(null);
       return;
     }
@@ -195,12 +193,15 @@ function animate(robot) {
   renderer.render(scene, camera);
 }
 
-function endGame(message) {
+function endGame(message, celebrate=false) {
   renderer.setAnimationLoop(null);
   gameOverOverlay.innerHTML = `
+   ${celebrate ? `<div style="font-size:32px; margin-bottom:10px;">🎉 Congratulations! 🎉</div>` : ""}
     <div>${message}</div>
+   
     <div>Final Score: ${score}</div>
-    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">Restart</button>
+   ${celebrate ? `<div style="font-size:20px; color:#ffd700;">✨ You did great! ✨</div>` : ""}
+    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">🔁 Play Again</button>
   `;
   gameOverOverlay.style.display = "block";
 
