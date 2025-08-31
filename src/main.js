@@ -40,6 +40,25 @@ scoreElement.innerHTML = `Score: ${score}`;
 document.body.appendChild(scoreElement);
 
 
+const gameOverOverlay = document.createElement("div");
+gameOverOverlay.style.cssText = `
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.85);
+  color: white;
+  font-size: 28px;
+  padding: 20px 40px;
+  border-radius: 12px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  z-index: 999;
+  display: none;
+`;
+document.body.appendChild(gameOverOverlay);
+
+
 const roadWidth = ground.width;
 const totalItems = 50; 
 
@@ -77,7 +96,7 @@ function animate(robot) {
   timeLeft -= delta;
   if (timeLeft <= 0) {
     stopBackgroundMusic();
-    alert("Time's up! Final Score: " + score);
+    // alert("Time's up! Final Score: " + score);
     endGame("⏱️ Time's up!");
     renderer.setAnimationLoop(null);
     return;
@@ -149,7 +168,8 @@ function animate(robot) {
     };
 
     if (boxCollision({ box1: robotBox, box2: obsBox })) {
-      alert("You hit an obstacle! Final Score: " + score);
+      endGame("💥 You hit an obstacle!");
+      // alert("You hit an obstacle! Final Score: " + score);
       renderer.setAnimationLoop(null);
       return;
     }
@@ -180,7 +200,7 @@ function endGame(message) {
   gameOverOverlay.innerHTML = `
     <div>${message}</div>
     <div>Final Score: ${score}</div>
-    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;">Restart</button>
+    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">Restart</button>
   `;
   gameOverOverlay.style.display = "block";
 
