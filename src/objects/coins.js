@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 export class Coin extends THREE.Mesh {
   constructor({ x = 0, y = 0.5, z = 0 }) {
-    const geometry = new THREE.CylinderGeometry(0.7, 0.7, 0.2, 32);
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0xffd700 });
     super(geometry, material);
 

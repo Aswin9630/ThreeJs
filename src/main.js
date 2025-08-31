@@ -25,7 +25,7 @@ const coins = [];
 const obstacles = [];
 const sparkles = [];
 let score = 0;
-let timeLeft = 30;
+let timeLeft = 60;
 
 const clock = new THREE.Clock();
 const timerElement = document.createElement("div");
@@ -45,9 +45,9 @@ const totalItems = 50;
 
 for (let i = 0; i < totalItems; i++) {
   const x = (Math.random() - 0.5) * (roadWidth - 1);
-  const z = -5 - Math.random() * 800;
+  const z = -5 - Math.random() * 1300;
 
-  const isCoin = Math.random() < 0.6; // 60% chance to spawn a coin
+  const isCoin = Math.random() < 0.6; 
 
   if (isCoin) {
     const coin = new Coin({ x, y: 0.5, z });
@@ -77,8 +77,8 @@ function animate(robot) {
   timeLeft -= delta;
   if (timeLeft <= 0) {
     stopBackgroundMusic();
-    endGame("⏱️ Time's up!");
     alert("Time's up! Final Score: " + score);
+    endGame("⏱️ Time's up!");
     renderer.setAnimationLoop(null);
     return;
   }
@@ -111,7 +111,6 @@ function animate(robot) {
     velocity: robot.velocity,
   };
 
-  // Coin collisions
   for (let i = coins.length - 1; i >= 0; i--) {
     const coin = coins[i];
     coin.update();
@@ -138,7 +137,6 @@ function animate(robot) {
     }
   }
 
-  // Obstacle collisions
   for (let obs of obstacles) {
     obs.update();
     const obsBox = {
@@ -157,7 +155,6 @@ function animate(robot) {
     }
   }
 
-  // Sparkle updates
   for (let i = sparkles.length - 1; i >= 0; i--) {
     const sparkle = sparkles[i];
     sparkle.update(delta);
@@ -168,7 +165,6 @@ function animate(robot) {
     }
   }
 
-  // Camera follows robot
   camera.position.set(
     robot.position.x,
     robot.position.y + 3,
