@@ -18,7 +18,6 @@ import {
   createTimerElement,
   createScoreElement,
   createGameOverOverlay,
-  endGameButton
 } from "./utils/ui";
 
 setupKeyboardListeners();
@@ -37,7 +36,6 @@ const clock = new THREE.Clock();
 const timerElement = createTimerElement();
 const scoreElement = createScoreElement();
 const gameOverOverlay = createGameOverOverlay();
-// const endGame = endGameButton()
 
 
 const roadWidth = ground.width;

@@ -2,7 +2,7 @@ import { Box } from "./box.js";
 import * as THREE from "three";
 
 const textureLoader = new THREE.TextureLoader();
-export const roadTexture = textureLoader.load("/road.jpg");
+export const roadTexture = textureLoader.load("../../assets/images/road.jpg");
 roadTexture.wrapS = THREE.RepeatWrapping;
 roadTexture.wrapT = THREE.RepeatWrapping;
 roadTexture.repeat.set(1, 4);
@@ -20,7 +20,7 @@ ground.receiveShadow = true;
 
 
 
-const wallTexture = textureLoader.load("/plasterWall.png"); 
+const wallTexture = textureLoader.load("../../assets/images/plasterWall.png"); 
 wallTexture.wrapS = THREE.RepeatWrapping;
 wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(1, 20);
