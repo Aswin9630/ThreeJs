@@ -18,7 +18,10 @@ import {
   createTimerElement,
   createScoreElement,
   createGameOverOverlay,
+  createStartButton,
 } from "./utils/ui";
+
+let gameStarted = false;
 
 setupKeyboardListeners();
 setupTouchControls();
@@ -36,7 +39,6 @@ const clock = new THREE.Clock();
 const timerElement = createTimerElement();
 const scoreElement = createScoreElement();
 const gameOverOverlay = createGameOverOverlay();
-
 
 const roadWidth = ground.width;
 const totalItems = 50;
@@ -64,13 +66,18 @@ loadAnimatedRobot(scene, ({ model, mixer: loadedMixer }) => {
   mixer = loadedMixer;
   robot.velocity = { x: 0, y: 0, z: 0 };
 
-  playBackgroundMusic();
+  createStartButton(() => {
+    gameStarted = true;
+    playBackgroundMusic();
+    renderer.setAnimationLoop(() => animate(robot));
+  });
 
   renderer.setAnimationLoop(() => animate(robot));
 });
 
 function animate(robot) {
   const delta = clock.getDelta();
+  if (!gameStarted) return;
   timeLeft -= delta;
   if (timeLeft <= 0) {
     stopBackgroundMusic();
@@ -174,21 +181,21 @@ function animate(robot) {
 function endGame(message, celebrate = false) {
   renderer.setAnimationLoop(null);
   gameOverOverlay.innerHTML = `
-   ${
-     celebrate
-       ? `<div style="font-size:32px; margin-bottom:10px;">🎉 Congratulations! 🎉</div>`
-       : ""
-   }
-    <div>${message}</div>
-   
-    <div>Final Score: ${score}</div>
-   ${
-     celebrate
-       ? `<div style="font-size:20px; color:#ffd700;">✨ You did great! ✨</div>`
-       : ""
-   }
-    <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">🔁 Play Again</button>
-  `;
+    ${
+      celebrate
+        ? `<div style="font-size:32px; margin-bottom:10px;">🎉 Congratulations! 🎉</div>`
+        : ""
+    }
+      <div>${message}</div>
+    
+      <div>Final Score: ${score}</div>
+    ${
+      celebrate
+        ? `<div style="font-size:20px; color:#ffd700;">✨ You did great! ✨</div>`
+        : ""
+    }
+      <button id="restartBtn" style="margin-top:15px;padding:10px 20px;font-size:18px;cursor:pointer">🔁 Play Again</button>
+    `;
   gameOverOverlay.style.display = "block";
 
   document.getElementById("restartBtn").onclick = () => {
